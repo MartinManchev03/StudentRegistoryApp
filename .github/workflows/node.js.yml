@@ -29,6 +29,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Build Server
-      run: npm run start
+      run: npm run start &
     - name: Run tests
       run: npm run test
