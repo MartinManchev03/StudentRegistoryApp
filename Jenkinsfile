@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_VERSION = '16'  // Set the Node.js version you want to use
+        NODE_VERSION = '16.14.0'  // Set the Node.js version you want to use
     }
 
     stages {
@@ -15,27 +15,50 @@ pipeline {
         stage('Setup Node.js') {
             steps {
                 script {
-                    bat "npm install -g n"
-                    bat "n ${NODE_VERSION}"  // Set the Node.js version
+                    if (isUnix()) {
+                        sh "npm install -g n"
+                        sh "n ${NODE_VERSION}"  // Set the Node.js version
+                    } else {
+                        bat "nvm install ${NODE_VERSION}"
+                        bat "nvm use ${NODE_VERSION}"
+                    }
                 }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm ci'
+                script {
+                    if (isUnix()) {
+                        sh 'npm ci'
+                    } else {
+                        bat 'npm ci'
+                    }
+                }
             }
         }
 
         stage('Build Server') {
             steps {
-                bat 'nohup npm run start &'
+                script {
+                    if (isUnix()) {
+                        sh 'nohup npm run start &'
+                    } else {
+                        bat 'start npm run start'
+                    }
+                }
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat 'npm run test'
+                script {
+                    if (isUnix()) {
+                        sh 'npm run test'
+                    } else {
+                        bat 'npm run test'
+                    }
+                }
             }
         }
     }
