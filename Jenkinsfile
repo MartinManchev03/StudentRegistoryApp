@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        NODE_VERSION = '16'  // Set the Node.js version you want to use
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,16 +12,24 @@ pipeline {
             }
         }
 
+        stage('Setup Node.js') {
+            steps {
+                script {
+                    sh "npm install -g n"
+                    sh "n ${NODE_VERSION}"  // Set the Node.js version
+                }
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
-                    // Install project dependencies
-                    sh 'npm install'
-                }
+                sh 'npm ci'
+            }
         }
 
         stage('Build Server') {
             steps {
-                sh 'npm run start &'
+                sh 'nohup npm run start &'
             }
         }
 
@@ -27,10 +39,10 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always {
-            cleanWs()
+            cleanWs()  // Clean up the workspace after the build
         }
     }
 }
