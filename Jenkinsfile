@@ -15,27 +15,27 @@ pipeline {
         stage('Setup Node.js') {
             steps {
                 script {
-                    sh "npm install -g n"
-                    sh "n ${NODE_VERSION}"  // Set the Node.js version
+                    bat "npm install -g n"
+                    bat "n ${NODE_VERSION}"  // Set the Node.js version
                 }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                bat 'npm ci'
             }
         }
 
         stage('Build Server') {
             steps {
-                sh 'nohup npm run start &'
+                bat 'nohup npm run start &'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npm run test'
+                bat 'npm run test'
             }
         }
     }
