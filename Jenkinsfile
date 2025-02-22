@@ -13,7 +13,6 @@ pipeline {
                     // Install project dependencies
                     sh 'npm ci'
                 }
-            }
         }
 
         stage('Build Server') {
